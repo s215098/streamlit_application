@@ -2,12 +2,12 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from pillow import Image
+from PIL import Image
 import plotly.express as px
 import plotly.graph_objects as go
-from scikit-learn.decomposition import PCA
-from scikit-learn.cluster import KMeans
-from scikit-learn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
 
 
 #####################################
