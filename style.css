@@ -1,0 +1,9 @@
+import streamlit as st
+
+.st.about-me {
+    background-color: #ffbfa9;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #333;
+}
