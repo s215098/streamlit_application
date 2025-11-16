@@ -21,6 +21,10 @@ def load_css(file_name):
 
 load_css("style.css")
 
+# for caching images ensuring faster loading
+def load_image(img_path):
+    return Image.open(img_path)
+
 
 # page configuration
 st.set_page_config(
@@ -35,25 +39,14 @@ st.set_page_config(
 ########## THE APPLICATION ##########
 #####################################
 
-# Header and subheader
-st.header("Application for Servier-Symphogen")
-st.write("Dear Servier-Symphogen. As mentioned in my application, I have just started developing my skills using streamlit for app generation.\n I have experience in doing the same using the Shiny library in R.")
-
-
-###### Caching image ######
-
-#defining function for caching image ensuring faster loading
-def load_image(img_path):
-    return Image.open(img_path)
-
-
-
 
 #### SIDEBAR NAVIGATION ####
 
 # Sidebar navigation
 st.sidebar.title("Navigation")
-page = st.sidebar.radio("Go to:", ["About Me", "Demo: Gene Expression Explorer"])
+page = st.sidebar.radio("Go to:", ["Start", "About Me", "Demo: Gene Expression Explorer"])
+
+
 
 
 # ==================== ABOUT ME PAGE ====================
@@ -61,13 +54,21 @@ page = st.sidebar.radio("Go to:", ["About Me", "Demo: Gene Expression Explorer"]
 # Could add
 # ["Relevant Courses", "Resumé highlights", "Why I want to work at Servier-Symphogen?"])
 
+if page == "Start":
+    # Header and subheader
+    st.header("Application for Servier-Symphogen")
+    st.write("As mentioned in my application, I have just started developing my skills using streamlit for app generation.\n I have experience in doing the same using the Shiny library in R. \n This acts as a demonstration of my current skills in streamlit, and I hope to further develop this with your team!")
 
-if page == "About Me":
+    # adding image of unix server
+    image = load_image("image.png")
+    st.image(image, width=500, caption="Coding directly on Unix server.")
+
+elif page == "About Me":
     
     col1, col2 = st.columns([2, 1])
     
     with col1:
-        st.markdown("### About Me")
+        st.header("About Me")
         st.write("""
         My name is Kristine and I'm currently studying on my second year of Bioinformatics at DTU.
         I have a strong passion for computational biology, particularly in the areas of immunology and protein design.
@@ -76,6 +77,7 @@ if page == "About Me":
 
         st.markdown("### Highlighted Courses")
         st.write("""
+        - Python Unix
         - High-Performance Computing (current)
         - Machine Learning
         - Special course: De novo Protein Design (current)
@@ -102,10 +104,6 @@ if page == "About Me":
         st.markdown("---")
         
         st.markdown("### Why Servier-Symphogen?")
-        # st.info("""
-        # <div style="background-color: #d1ecf1; padding: 15px; border-radius: 5px; border-left: 4px solid #0c5460;">
-        # This job post fits amazingly with my interests and skills. Seems like the <span style="color: #0c5460; font-weight: bold; font-size: 1.1em;">perfect match</span>!
-        # """)
         st.markdown(
         """
         <div style="background-color: #d1ecf1; padding: 15px; border-radius: 5px; border-left: 4px solid #0c5460;">
@@ -119,8 +117,14 @@ if page == "About Me":
 
 # ==================== DEMO PAGE ====================
 else:
-    st.markdown('<p class="main-header">Gene Expression Explorer</p>', unsafe_allow_html=True)
+    st.header("Gene Expression Explorer")
     st.markdown('<p class="sub-header">Interactive tool for cancer genomics data analysis</p>', unsafe_allow_html=True)
+    
+    
+    st.markdown("""
+    **About this demo:** This tool demonstrates interactive capabilities of streamlit apps for more user friendly cancer target exploration.
+    This is only one example of the endless applications possible in oncology/immunology research. 
+    """)
     
     st.markdown("---")
     
@@ -131,32 +135,39 @@ else:
         
         # Cancer types
         cancer_types = ['Breast', 'Lung', 'Colon', 'Melanoma', 'Prostate']
-        n_samples_per_type = 20
+        n_samples_per_type = 15
         
         # Gene names (oncology/immunology relevant)
         genes = ['PD-L1', 'CTLA4', 'CD274', 'HER2', 'EGFR', 'KRAS', 
                 'TP53', 'BRCA1', 'BRAF', 'CD8A', 'IFNG', 'TNF']
         
+        # Create DataFrame
         data = []
         for cancer in cancer_types:
             for i in range(n_samples_per_type):
                 sample = {'Cancer_Type': cancer, 'Sample_ID': f'{cancer}_{i+1}'}
-                # Generate expression values with some cancer-specific patterns
+                
+                # Generate expression values with some cancer-specific patterns - to make it realistic
                 for gene in genes:
                     base_expr = np.random.normal(5, 1.5)
-                    if gene == 'HER2' and cancer == 'Breast':
+
+                    # Add cancer-specific patterns (THIS IS THE KEY PART!)
+                    if gene == 'HER2' and cancer == 'Breast': # HER2 is often overexpressed in breast cancer
                         base_expr += np.random.normal(3, 0.5)
-                    elif gene == 'EGFR' and cancer == 'Lung':
+                    elif gene == 'EGFR' and cancer == 'Lung':  # EGFR mutations common in lung cancer
                         base_expr += np.random.normal(2, 0.5)
-                    sample[gene] = max(0, base_expr)
+                    
+                    sample[gene] = max(0, base_expr) # Can't have negative expression
+                
                 data.append(sample)
         
         return pd.DataFrame(data), genes
     
+
     df, gene_list = generate_sample_data()
     
     # Sidebar filters
-    st.sidebar.markdown("## 🔍 Filters")
+    st.sidebar.markdown("## Filters")
     selected_cancers = st.sidebar.multiselect(
         "Select Cancer Types",
         options=df['Cancer_Type'].unique(),
@@ -175,7 +186,7 @@ else:
     if len(selected_genes) > 0 and len(selected_cancers) > 0:
         
         # Main content tabs
-        tab1, tab2, tab3, tab4 = st.tabs(["📊 Expression Levels", "🔥 Heatmap", "🤖 ML Clustering", "📈 Statistics"])
+        tab1, tab2, tab3, tab4 = st.tabs(["Expression Levels", "Heatmap", "ML Clustering", "Statistics"])
         
         # TAB 1: Expression levels
         with tab1:
@@ -195,7 +206,7 @@ else:
             st.plotly_chart(fig, use_container_width=True)
             
             # Show sample data
-            st.markdown("### 📋 Sample Data")
+            st.markdown("### Sample Data")
             st.dataframe(filtered_df.head(10), use_container_width=True)
         
         # TAB 2: Heatmap
@@ -275,7 +286,7 @@ else:
         
         # TAB 4: Statistics
         with tab4:
-            st.markdown("### 📊 Summary Statistics")
+            st.markdown("### Summary Statistics")
             
             stats_df = filtered_df.groupby('Cancer_Type')[selected_genes].agg(['mean', 'std'])
             stats_df.columns = [f'{gene}_{stat}' for gene, stat in stats_df.columns]
@@ -292,18 +303,11 @@ else:
             # Download button
             csv = filtered_df.to_csv(index=False)
             st.download_button(
-                label="📥 Download Filtered Data (CSV)",
+                label=" Download Filtered Data (CSV)",
                 data=csv,
                 file_name="gene_expression_data.csv",
                 mime="text/csv"
             )
     
     else:
-        st.warning("⚠️ Please select at least one cancer type and one gene from the sidebar.")
-    
-    st.markdown("---")
-    st.markdown("""
-    **About this demo:** This tool demonstrates interactive data exploration capabilities 
-    for cancer genomics research. It showcases data visualization, filtering, ML analysis, 
-    and export functionality - all essential features for computational biology applications.
-    """)
+        st.warning(" Please select at least one cancer type and one gene from the sidebar.")
