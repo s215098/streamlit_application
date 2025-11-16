@@ -2,5 +2,5 @@ streamlit
 pandas
 numpy
 pillow
-sklearn
+scikit-learn
 plotly
