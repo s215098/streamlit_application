@@ -101,10 +101,11 @@ elif page == "About Me":
     with col2:
         st.markdown("### Connect With Me")
         st.info("""
-        Email: kristine@toftjohansen.com
-        LinkedIn: https://www.linkedin.com/in/kristine-toft-johansen/
-        Phone: +45 29875078
-        """)
+        Email: kristine@toftjohansen.com  \n
+        LinkedIn: https://www.linkedin.com/in/kristine-toft-johansen/  \n
+        Phone: +45 29875078  \n
+        """,
+        icon="💬")
 
         st.markdown("\n")
         
