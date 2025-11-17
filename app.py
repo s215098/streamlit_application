@@ -57,6 +57,7 @@ page = st.sidebar.radio("Go to:", ["Start", "About Me", "Demo: Gene Expression E
 if page == "Start":
     # Header and subheader
     st.header("Application for Servier-Symphogen")
+    st.markdown('<p class="sub-header"Kristine Toft Johansen</p>', unsafe_allow_html=True)
     st.write("As mentioned in my application, I have just started developing my skills using streamlit for app generation.\n I have experience in doing the same using the Shiny library in R. \n This acts as a demonstration of my current skills in streamlit, and I hope to further develop this with your team!")
 
     # adding image of unix server
