@@ -124,12 +124,12 @@ elif page == "About Me":
 # ==================== DEMO PAGE ====================
 else:
     st.header("Gene Expression Explorer")
-    st.markdown('<p class="sub-header">Interactive tool for cancer genomics data analysis</p>', unsafe_allow_html=True)
+    st.markdown('<p class="sub-header">Interactive tool for cancer target data analysis</p>', unsafe_allow_html=True)
     
     
     st.markdown("""
     **About this demo:** This tool demonstrates interactive capabilities of streamlit apps for more user friendly cancer target exploration.
-    This is only one example of the endless applications possible in oncology/immunology research. 
+    This is only one example of the endless applications possible in oncology/immunology research and antibody design. 
     """)
     
     st.markdown("---")
